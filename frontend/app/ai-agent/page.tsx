@@ -1,0 +1,209 @@
+"use client"
+
+import type React from "react"
+
+import { useChat } from "@ai-sdk/react"
+import { DefaultChatTransport } from "ai"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Badge } from "@/components/ui/badge"
+import { Bot, User, MapPin, Calendar, Thermometer, Menu, X } from "lucide-react"
+import { useState } from "react"
+
+export default function AIAgentPage() {
+  const [input, setInput] = useState("")
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+  const { messages, sendMessage, status } = useChat({
+    transport: new DefaultChatTransport({ api: "/api/ocean-chat" }),
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (input.trim()) {
+      sendMessage({ text: input })
+      setInput("")
+    }
+  }
+
+  const suggestedQuestions = [
+    "What data is available from the Indian Ocean Argo buoys?",
+    "Show me temperature trends in the Arabian Sea",
+    "What are the current buoy locations near India?",
+    "Explain the seasonal patterns in ocean temperature",
+    "How does the monsoon affect ocean conditions?",
+    "What depth measurements are available?",
+  ]
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Data Sources Info */}
+          <div className={`lg:col-span-1 space-y-4 ${isSidebarOpen ? "block" : "hidden lg:block"}`}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="lg:hidden mb-4"
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+              {isSidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {isSidebarOpen ? "Hide Menu" : "Show Menu"}
+            </Button>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <MapPin className="w-5 h-5" />
+                  Data Sources
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  <Badge variant="secondary" className="w-full justify-start">
+                    <Calendar className="w-3 h-3 mr-1" />
+                    NOAA Argo 2019
+                  </Badge>
+                  <p className="text-xs text-muted-foreground">
+                    Temperature, salinity, and depth profiles from autonomous floats
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Badge variant="secondary" className="w-full justify-start">
+                    <Thermometer className="w-3 h-3 mr-1" />
+                    INCOIS Network
+                  </Badge>
+                  <p className="text-xs text-muted-foreground">
+                    Real-time buoy observations around Indian sub-continent
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Quick Questions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {suggestedQuestions.map((question, index) => (
+                    <Button
+                      key={index}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start text-left h-auto p-2 text-xs whitespace-normal break-words"
+                      onClick={() => setInput(question)}
+                    >
+                      {question}
+                    </Button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Chat Interface */}
+          <div className="lg:col-span-3">
+            <Card className="h-[600px] flex flex-col">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bot className="w-5 h-5" />
+                  Ocean Data Assistant
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent className="flex-1 flex flex-col p-0">
+                <ScrollArea className="flex-1 p-4">
+                  <div className="space-y-4">
+                    {messages.length === 0 && (
+                      <div className="text-center py-8">
+                        <Bot className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                        <h3 className="text-lg font-semibold mb-2">Welcome to OceanFront AI</h3>
+                        <p className="text-muted-foreground mb-4">
+                          I can help you understand and analyze oceanographic data from the Indian Ocean region.
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Ask me about temperature patterns, buoy locations, seasonal trends, or any other ocean data
+                          questions.
+                        </p>
+                      </div>
+                    )}
+
+                    {messages.map((message) => (
+                      <div key={message.id} className="flex gap-3">
+                        <div className="flex-shrink-0">
+                          {message.role === "user" ? (
+                            <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                              <User className="w-4 h-4" />
+                            </div>
+                          ) : (
+                            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                              <Bot className="w-4 h-4 text-primary-foreground" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <div className="bg-card border rounded-lg p-3">
+                            {message.parts.map((part, index) => {
+                              if (part.type === "text") {
+                                return (
+                                  <div key={index} className="prose prose-sm max-w-none">
+                                    {part.text.split("\n").map((line, lineIndex) => (
+                                      <p key={lineIndex} className="mb-2 last:mb-0">
+                                        {line}
+                                      </p>
+                                    ))}
+                                  </div>
+                                )
+                              }
+                              return null
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    {status === "in_progress" && (
+                      <div className="flex gap-3">
+                        <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                          <Bot className="w-4 h-4 text-primary-foreground" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="bg-card border rounded-lg p-3">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                              <span className="text-sm text-muted-foreground">Analyzing ocean data...</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+
+                <div className="border-t p-4">
+                  <form onSubmit={handleSubmit} className="flex gap-2">
+                    <Input
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="Ask about ocean data, buoy locations, temperature trends..."
+                      disabled={status === "in_progress"}
+                      className="flex-1"
+                    />
+                    <Button type="submit" disabled={status === "in_progress" || !input.trim()}>
+                      Send
+                    </Button>
+                  </form>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

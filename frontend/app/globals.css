@@ -1,0 +1,127 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color scheme for oceanographic theme */
+  --background: #f0f4f8; /* Light Gray for overall background */
+  --foreground: #374151; /* Charcoal Gray for primary text */
+  --card: #ffffff; /* White for card backgrounds */
+  --card-foreground: #374151; /* Charcoal Gray for card text */
+  --popover: #ffffff; /* White for popover backgrounds */
+  --popover-foreground: #374151; /* Charcoal Gray for popover text */
+  --primary: #0077be; /* Ocean Blue for primary actions */
+  --primary-foreground: #ffffff; /* White for text on primary buttons */
+  --secondary: #1db954; /* Sea Green for secondary actions */
+  --secondary-foreground: #ffffff; /* White for text on secondary buttons */
+  --muted: #f0f4f8; /* Light Gray for muted backgrounds */
+  --muted-foreground: #6b7280; /* Gray for muted text */
+  --accent: #1db954; /* Sea Green for accents */
+  --accent-foreground: #ffffff; /* White for text on accent elements */
+  --destructive: #dc2626; /* Red for destructive actions */
+  --destructive-foreground: #ffffff; /* White for text on destructive buttons */
+  --border: #e0e7ff; /* Light border for card and panel separation */
+  --input: #ffffff; /* White for input fields */
+  --ring: rgba(0, 119, 190, 0.5); /* Ocean Blue ring for focused elements */
+  --chart-1: #0077be; /* Ocean Blue for primary charts */
+  --chart-2: #1db954; /* Sea Green for secondary charts */
+  --chart-3: #f59e0b; /* Amber for additional chart data */
+  --chart-4: #dc2626; /* Red for alert data in charts */
+  --chart-5: #4b5563; /* Charcoal Gray for neutral data */
+  --radius: 0.5rem; /* Rounded corners for cards and buttons */
+  --sidebar: #ffffff; /* White for sidebar background */
+  --sidebar-foreground: #374151; /* Charcoal Gray for sidebar text */
+  --sidebar-primary: #0077be; /* Ocean Blue for sidebar highlights */
+  --sidebar-primary-foreground: #ffffff; /* White for text on sidebar highlights */
+  --sidebar-accent: #1db954; /* Sea Green for accent elements in sidebar */
+  --sidebar-accent-foreground: #ffffff; /* White for text on sidebar accent elements */
+  --sidebar-border: #e0e7ff; /* Light border for sidebar separation */
+  --sidebar-ring: rgba(0, 119, 190, 0.5); /* Ocean Blue ring for focused sidebar elements */
+}
+
+.dark {
+  /* Updated dark mode colors for oceanographic theme */
+  --background: #0f172a; /* Dark slate for background */
+  --foreground: #f1f5f9; /* Light slate for text */
+  --card: #1e293b; /* Darker slate for cards */
+  --card-foreground: #f1f5f9; /* Light slate for card text */
+  --popover: #1e293b; /* Darker slate for popovers */
+  --popover-foreground: #f1f5f9; /* Light slate for popover text */
+  --primary: #0ea5e9; /* Lighter ocean blue for dark mode */
+  --primary-foreground: #0f172a; /* Dark text on primary */
+  --secondary: #22c55e; /* Brighter sea green for dark mode */
+  --secondary-foreground: #0f172a; /* Dark text on secondary */
+  --muted: #334155; /* Muted slate */
+  --muted-foreground: #94a3b8; /* Light muted text */
+  --accent: #22c55e; /* Bright sea green accent */
+  --accent-foreground: #0f172a; /* Dark text on accent */
+  --destructive: #ef4444; /* Bright red for destructive */
+  --destructive-foreground: #ffffff; /* White text on destructive */
+  --border: #334155; /* Slate border */
+  --input: #1e293b; /* Dark input background */
+  --ring: rgba(14, 165, 233, 0.5); /* Light ocean blue ring */
+  --chart-1: #0ea5e9; /* Light ocean blue for charts */
+  --chart-2: #22c55e; /* Bright sea green for charts */
+  --chart-3: #f59e0b; /* Amber for charts */
+  --chart-4: #ef4444; /* Bright red for alert charts */
+  --chart-5: #64748b; /* Slate for neutral charts */
+  --sidebar: #1e293b; /* Dark sidebar */
+  --sidebar-foreground: #f1f5f9; /* Light sidebar text */
+  --sidebar-primary: #0ea5e9; /* Light ocean blue for sidebar highlights */
+  --sidebar-primary-foreground: #0f172a; /* Dark text on sidebar highlights */
+  --sidebar-accent: #22c55e; /* Bright sea green for sidebar accents */
+  --sidebar-accent-foreground: #0f172a; /* Dark text on sidebar accents */
+  --sidebar-border: #334155; /* Slate sidebar border */
+  --sidebar-ring: rgba(14, 165, 233, 0.5); /* Light ocean blue sidebar ring */
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
