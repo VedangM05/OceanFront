@@ -1,0 +1,172 @@
+
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+Require stack:
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\lightningcss\node\index.js
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\node\dist\index.js
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\postcss\dist\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack-config.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\start-server.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1144:15)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:57:36
+    at Module._load (node:internal/modules/cjs/loader:985:27)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\lightningcss\node\index.js:22:22)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\node\dist\index.js:15:188)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\postcss\dist\index.js:1:1328)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:64:48
+    at plugin (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:30:44)
+    at Processor.normalize (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\processor.js:18:13)
+    at new Processor (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\processor.js:11:25)
+    at postcss (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\postcss.js:26:10)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\index.js:128:37
+ ⨯ node_modules\geist\dist\mono.js
+An error occurred in `next/font`.
+
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+Require stack:
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\lightningcss\node\index.js
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\node\dist\index.js
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\postcss\dist\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack-config.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\start-server.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1144:15)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:57:36
+    at Module._load (node:internal/modules/cjs/loader:985:27)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\lightningcss\node\index.js:22:22)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\node\dist\index.js:15:188)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\postcss\dist\index.js:1:1328)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:64:48
+    at plugin (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:30:44)
+    at Processor.normalize (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\processor.js:18:13)
+    at new Processor (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\processor.js:11:25)
+    at postcss (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\postcss.js:26:10)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\index.js:128:37
+ ⨯ node_modules\geist\dist\mono.js
+An error occurred in `next/font`.
+
+Error: Cannot find module '../lightningcss.win32-x64-msvc.node'
+Require stack:
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\lightningcss\node\index.js
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\node\dist\index.js
+- D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\postcss\dist\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\index.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack-config.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\dev\hot-reloader-webpack.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\lib\start-server.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1144:15)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:57:36
+    at Module._load (node:internal/modules/cjs/loader:985:27)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\lightningcss\node\index.js:22:22)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\node\dist\index.js:15:188)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at Object.<anonymous> (D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\node_modules\@tailwindcss\postcss\dist\index.js:1:1328)
+    at Module._compile (node:internal/modules/cjs/loader:1376:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1435:10)
+    at Module.load (node:internal/modules/cjs/loader:1207:32)
+    at Module._load (node:internal/modules/cjs/loader:1023:12)
+    at Module.require (node:internal/modules/cjs/loader:1235:19)
+    at mod.require (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\server\require-hook.js:68:28)
+    at require (node:internal/modules/helpers:176:18)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:64:48
+    at plugin (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\plugins.js:30:44)
+    at Processor.normalize (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\processor.js:18:13)
+    at new Processor (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\processor.js:11:25)
+    at postcss (C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\postcss\lib\postcss.js:26:10)
+    at C:\Users\UserName\AppData\Local\npm-cache\_npx\8b377f6eec906bc4\node_modules\next\dist\build\webpack\config\blocks\css\index.js:128:37
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Documents\\ACADEMIC\\BTECH\\TY\\Sem-I_Mod-V\\EDAI-V\\OceanFrontRepo\\OceanFront\\frontend\\.next\\fallback-build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Documents\\ACADEMIC\\BTECH\\TY\\Sem-I_Mod-V\\EDAI-V\\OceanFrontRepo\\OceanFront\\frontend\\.next\\fallback-build-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\Documents\ACADEMIC\BTECH\TY\Sem-I_Mod-V\EDAI-V\OceanFrontRepo\OceanFront\frontend\.next\fallback-build-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Documents\\ACADEMIC\\BTECH\\TY\\Sem-I_Mod-V\\EDAI-V\\OceanFrontRepo\\OceanFront\\frontend\\.next\\fallback-build-manifest.json'
+}
