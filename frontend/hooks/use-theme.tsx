@@ -30,8 +30,24 @@ export function ThemeProvider({
   storageKey = "oceanfront-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => (localStorage?.getItem(storageKey) as Theme) || defaultTheme)
+  // 1. Initial state set to defaultTheme (e.g., "system").
+  // This avoids accessing localStorage on the server during SSR.
+  const [theme, setTheme] = useState<Theme>(defaultTheme) 
 
+  // 2. useEffect for reading the stored theme and setting up the listener.
+  // This runs only on the client after mounting.
+  useEffect(() => {
+    // Check if localStorage is available (should be true here)
+    if (typeof window !== "undefined" && window.localStorage) {
+        const storedTheme = localStorage.getItem(storageKey) as Theme
+        if (storedTheme) {
+            setTheme(storedTheme)
+        }
+    }
+  }, [storageKey])
+
+
+  // 3. useEffect for applying the theme class to the document root (original logic).
   useEffect(() => {
     const root = window.document.documentElement
 
@@ -49,9 +65,12 @@ export function ThemeProvider({
 
   const value = {
     theme,
-    setTheme: (theme: Theme) => {
-      localStorage?.setItem(storageKey, theme)
-      setTheme(theme)
+    setTheme: (newTheme: Theme) => {
+      // 4. Safely set theme in localStorage when the user changes it.
+      if (typeof window !== "undefined" && window.localStorage) {
+        localStorage.setItem(storageKey, newTheme)
+      }
+      setTheme(newTheme)
     },
   }
 

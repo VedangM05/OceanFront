@@ -1,51 +1,96 @@
-import { openai } from "@ai-sdk/openai"
-import { convertToModelMessages, streamText, type UIMessage } from "ai"
+// frontend/app/api/ocean-chat/route.ts
+import { Groq, ChatCompletionMessageParam } from "groq-sdk"
+import { NextResponse } from "next/server"
 
-export const maxDuration = 30
+// --- Client Initialization (Must be outside POST) ---
+const GROQ_API_KEY = process.env.GROQ_API_KEY
 
-const OCEAN_DATA_CONTEXT = `
-You are an expert oceanographer and data analyst specializing in Indian Ocean data. You have access to:
+console.log("GROQ_API_KEY status:", GROQ_API_KEY ? "LOADED" : "MISSING/UNDEFINED")
 
-1. NOAA Argo Float Data (2019) from the Indian Ocean:
-   - Monthly temperature, salinity, and pressure profiles
-   - Data organized by months (01/ through 12/ directories)
-   - Autonomous float measurements at various depths
-   - Coverage across the Indian Ocean basin
+let client: Groq;
 
-2. INCOIS Ocean Observation Network:
-   - Real-time buoy data from around the Indian sub-continent
-   - In-situ measurements including temperature, currents, waves
-   - Remote sensing data integration
-   - Coastal and deep ocean monitoring stations
+try {
+  if (!GROQ_API_KEY) {
+    throw new Error("GROQ_API_KEY is not set. Cannot initialize Groq client.")
+  }
+  client = new Groq({
+    apiKey: GROQ_API_KEY,
+  })
+  console.log("Groq client initialized successfully.")
+} catch (e: any) {
+  console.error("FATAL ERROR: Groq client failed to initialize:", e.message)
+}
+// ----------------------------------------------------
 
-Key capabilities:
-- Explain oceanographic phenomena in the Indian Ocean
-- Discuss seasonal patterns, monsoon effects, temperature gradients
-- Provide insights about data collection methods and buoy technology
-- Analyze trends and patterns in ocean conditions
-- Explain the importance of ocean monitoring for climate and weather
-
-Always provide scientifically accurate information and explain complex concepts in an accessible way. When discussing specific data points, acknowledge that you're working with 2019 Argo data and current INCOIS network information.
-`
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json()
+  try {
+    // 1. Check client initialization status before proceeding
+    if (!client) {
+      console.error("Attempt to call POST handler with uninitialized Groq client.")
+      return NextResponse.json(
+        { parts: [{ type: "text", text: "Error: AI client not configured. Check server logs for API key errors." }] },
+        { status: 500 }
+      )
+    }
+    
+    const { messages } = await req.json()
 
-  const prompt = convertToModelMessages([
-    {
-      role: "system",
-      content: OCEAN_DATA_CONTEXT,
-    },
-    ...messages,
-  ])
+    // 2. Input Validation
+    if (!messages || !Array.isArray(messages)) {
+        return NextResponse.json(
+            { parts: [{ type: "text", text: "Bad Request: Invalid message format." }] },
+            { status: 400 }
+        )
+    }
 
-  const result = streamText({
-    model: openai("gpt-4"),
-    messages: prompt,
-    maxTokens: 1000,
-    temperature: 0.7,
-    abortSignal: req.signal,
-  })
+    // 3. Map messages to Groq's expected format (safely casted for TypeScript)
+    const chatHistory = messages.map((m: any) => ({
+      role: m.role === "user" ? "user" : "assistant",
+      content: m.content || m.text || "",
+    })) as ChatCompletionMessageParam[]
 
-  return result.toUIMessageStreamResponse()
+    // 4. Request the streaming response from Groq
+    const groqStream = await client.chat.completions.create({
+      model: "openai/gpt-oss-120b",
+      messages: [
+        { role: "system", content: "You are OceanFront AI, an oceanographic assistant specialized in Indian Ocean data." },
+        ...chatHistory,
+      ],
+      stream: true, // IMPORTANT: Request a stream
+    })
+
+    // 5. Create a Native Web Stream (ReadableStream) to handle the Groq stream
+    const encoder = new TextEncoder();
+    const readableStream = new ReadableStream({
+      async start(controller) {
+        for await (const chunk of groqStream) {
+          // Extract the content from the stream chunk
+          const text = chunk.choices[0]?.delta?.content || "";
+          
+          // Encode the text and enqueue it to the response stream
+          controller.enqueue(encoder.encode(text));
+        }
+        controller.close();
+      },
+    });
+
+    // 6. Return the stream using the standard Web Response object
+    return new Response(readableStream, {
+      headers: { 
+        // Use text/plain for a simple text stream (consumed by fetch on client)
+        'Content-Type': 'text/plain; charset=utf-8', 
+      },
+      status: 200
+    });
+
+  } catch (error: any) {
+    console.error("Critical Error in /api/ocean-chat route:", error)
+    
+    // Return a standard JSON error as a fallback
+    return NextResponse.json(
+      { parts: [{ type: "text", text: "Error: Failed to fetch AI response." }] },
+      { status: 500 }
+    )
+  }
 }

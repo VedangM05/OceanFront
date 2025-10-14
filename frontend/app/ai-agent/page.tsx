@@ -1,31 +1,110 @@
 "use client"
 
 import type React from "react"
-
-import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
+// NO LONGER NEEDED: import { useChat } from "@ai-sdk/react"
+// NO LONGER NEEDED: import { DefaultChatTransport } from "ai"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { Bot, User, MapPin, Calendar, Thermometer, Menu, X } from "lucide-react"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react" // Added useRef and useEffect
+
+// Define a simpler, consistent message structure for the UI
+interface Message {
+  id: string
+  role: 'user' | 'assistant'
+  content: string // All text goes here, no 'parts' array needed
+}
 
 export default function AIAgentPage() {
   const [input, setInput] = useState("")
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [status, setStatus] = useState<'idle' | 'in_progress'>('idle')
+  
+  // Ref for auto-scrolling the chat area
+  const scrollAreaRef = useRef<HTMLDivElement>(null)
 
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/ocean-chat" }),
-  })
+  // Auto-scroll logic
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollTo({
+        top: scrollAreaRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [messages])
+
+  const streamChatResponse = async (history: Message[]) => {
+    setStatus('in_progress')
+    
+    // Convert current history (including new user message) to the format expected by the API route
+    const bodyMessages = history.map(m => ({
+        role: m.role,
+        content: m.content
+    }))
+
+    try {
+      const response = await fetch('/api/ocean-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: bodyMessages }),
+      })
+
+      if (!response.ok || !response.body) {
+        throw new Error(`API returned status ${response.status}`)
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let aiResponse = ''
+      
+      // Create a temporary ID for the streaming message
+      const assistantId = Date.now().toString() + '-ai'
+      
+      // Add the empty assistant message to the state
+      setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }])
+
+      // Read the stream
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const chunk = decoder.decode(value, { stream: true })
+        aiResponse += chunk
+
+        // Update the last message in state with the new chunk
+        setMessages((prev) => 
+          prev.map(m => m.id === assistantId ? { ...m, content: aiResponse } : m)
+        )
+      }
+    } catch (error) {
+      console.error("Streaming chat failed:", error)
+      const errorMessage: Message = { id: Date.now().toString(), role: 'assistant', content: `Error: Failed to fetch AI response. Please check server logs. (${error.message})` }
+      setMessages((prev) => [...prev, errorMessage])
+    } finally {
+      setStatus('idle')
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (input.trim()) {
-      sendMessage({ text: input })
-      setInput("")
-    }
+    const text = input.trim()
+    if (!text || status === 'in_progress') return;
+
+    const userMessage: Message = { id: Date.now().toString(), role: 'user', content: text };
+    
+    // Update state first with the user message
+    setMessages((prev) => {
+        const newHistory = [...prev, userMessage];
+        // Initiate the streaming process with the new full history
+        streamChatResponse(newHistory); 
+        return newHistory;
+    });
+
+    setInput("");
   }
 
   const suggestedQuestions = [
@@ -43,7 +122,7 @@ export default function AIAgentPage() {
 
       <div className="container mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Data Sources Info */}
+          {/* Data Sources Info (Sidebar) */}
           <div className={`lg:col-span-1 space-y-4 ${isSidebarOpen ? "block" : "hidden lg:block"}`}>
             <Button
               variant="ghost"
@@ -97,6 +176,7 @@ export default function AIAgentPage() {
                       size="sm"
                       className="w-full justify-start text-left h-auto p-2 text-xs whitespace-normal break-words"
                       onClick={() => setInput(question)}
+                      disabled={status === 'in_progress'}
                     >
                       {question}
                     </Button>
@@ -117,7 +197,7 @@ export default function AIAgentPage() {
               </CardHeader>
 
               <CardContent className="flex-1 flex flex-col p-0">
-                <ScrollArea className="flex-1 p-4">
+                <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
                   <div className="space-y-4">
                     {messages.length === 0 && (
                       <div className="text-center py-8">
@@ -148,25 +228,25 @@ export default function AIAgentPage() {
                         </div>
                         <div className="flex-1 space-y-2">
                           <div className="bg-card border rounded-lg p-3">
-                            {message.parts.map((part, index) => {
-                              if (part.type === "text") {
-                                return (
-                                  <div key={index} className="prose prose-sm max-w-none">
-                                    {part.text.split("\n").map((line, lineIndex) => (
-                                      <p key={lineIndex} className="mb-2 last:mb-0">
-                                        {line}
-                                      </p>
-                                    ))}
-                                  </div>
-                                )
-                              }
-                              return null
-                            })}
+                            {/* RENDER MESSAGE.CONTENT DIRECTLY */}
+                            <div className="prose prose-sm max-w-none">
+                              {message.content.split("\n").map((line, lineIndex) => (
+                                <p key={lineIndex} className="mb-2 last:mb-0">
+                                  {line}
+                                </p>
+                              ))}
+                            </div>
+                            
+                            {/* Fallback for empty message during streaming */}
+                            {message.role === 'assistant' && message.content.length === 0 && status === 'in_progress' && (
+                                <span className="text-sm text-muted-foreground italic">...</span>
+                            )}
                           </div>
                         </div>
                       </div>
                     ))}
 
+                    {/* Loading indicator */}
                     {status === "in_progress" && (
                       <div className="flex gap-3">
                         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
