@@ -2,36 +2,52 @@
 import { Groq, ChatCompletionMessageParam } from "groq-sdk"
 import { NextResponse } from "next/server"
 
-// --- Client Initialization (Must be outside POST) ---
-const GROQ_API_KEY = process.env.GROQ_API_KEY
+// Ensure this route runs in the Node.js runtime so server-only APIs
+// like `process.env` and the `groq-sdk` Node client are available.
+export const runtime = 'nodejs'
 
-console.log("GROQ_API_KEY status:", GROQ_API_KEY ? "LOADED" : "MISSING/UNDEFINED")
+// --- Lazy Client Initialization ---
+// Initialize Groq client on first request, not at module load time.
+// This ensures environment variables are fresh in dev mode.
+let client: Groq | null = null;
 
-let client: Groq;
+function initializeGroqClient(): Groq {
+  if (client) return client;
 
-try {
+  const GROQ_API_KEY = process.env.GROQ_API_KEY;
+
   if (!GROQ_API_KEY) {
-    throw new Error("GROQ_API_KEY is not set. Cannot initialize Groq client.")
+    throw new Error("GROQ_API_KEY is not set. Cannot initialize Groq client.");
   }
+
   client = new Groq({
     apiKey: GROQ_API_KEY,
-  })
-  console.log("Groq client initialized successfully.")
-} catch (e: any) {
-  console.error("FATAL ERROR: Groq client failed to initialize:", e.message)
-}
-// ----------------------------------------------------
+  });
 
+  console.log("Groq client initialized successfully.");
+  return client;
+}
 
 export async function POST(req: Request) {
   try {
-    // 1. Check client initialization status before proceeding
-    if (!client) {
-      console.error("Attempt to call POST handler with uninitialized Groq client.")
-      return NextResponse.json(
-        { parts: [{ type: "text", text: "Error: AI client not configured. Check server logs for API key errors." }] },
-        { status: 500 }
-      )
+    // 1. Initialize Groq client on first request
+    let groqClient: Groq;
+    try {
+      groqClient = initializeGroqClient();
+    } catch (initError: any) {
+      console.error("FATAL ERROR: Groq client failed to initialize:", initError.message);
+      const encoder = new TextEncoder();
+      const readableStream = new ReadableStream({
+        start(controller) {
+          const message = "⚠️ Error: Invalid Groq API Key. Please check your GROQ_API_KEY in .env.local and ensure it's a valid, non-expired key from https://console.groq.com/keys";
+          controller.enqueue(encoder.encode(message));
+          controller.close();
+        },
+      });
+      return new Response(readableStream, {
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        status: 200,
+      });
     }
     
     const { messages } = await req.json()
@@ -51,7 +67,7 @@ export async function POST(req: Request) {
     })) as ChatCompletionMessageParam[]
 
     // 4. Request the streaming response from Groq
-    const groqStream = await client.chat.completions.create({
+    const groqStream = await groqClient.chat.completions.create({
       model: "openai/gpt-oss-120b",
       messages: [
         { role: "system", content: "You are OceanFront AI, an oceanographic assistant specialized in Indian Ocean data." },
@@ -87,10 +103,34 @@ export async function POST(req: Request) {
   } catch (error: any) {
     console.error("Critical Error in /api/ocean-chat route:", error)
     
-    // Return a standard JSON error as a fallback
-    return NextResponse.json(
-      { parts: [{ type: "text", text: "Error: Failed to fetch AI response." }] },
-      { status: 500 }
-    )
+    // Check if it's an authentication error (invalid API key)
+    if (error.status === 401 || error.message?.includes("Invalid API Key")) {
+      const encoder = new TextEncoder();
+      const readableStream = new ReadableStream({
+        start(controller) {
+          const message = "⚠️ Error: Invalid Groq API Key. Please check your GROQ_API_KEY in .env.local and ensure it's a valid, non-expired key from https://console.groq.com/keys";
+          controller.enqueue(encoder.encode(message));
+          controller.close();
+        },
+      });
+      return new Response(readableStream, {
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        status: 200 // Return 200 so streaming works, but with error message
+      });
+    }
+
+    // For other errors, return a generic error stream
+    const encoder = new TextEncoder();
+    const readableStream = new ReadableStream({
+      start(controller) {
+        const message = `Error: Failed to fetch AI response. ${error.message || "Unknown error"}`;
+        controller.enqueue(encoder.encode(message));
+        controller.close();
+      },
+    });
+    return new Response(readableStream, {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+      status: 200 // Return 200 so streaming works
+    });
   }
 }
