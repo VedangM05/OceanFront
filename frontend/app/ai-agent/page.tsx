@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { Bot, User, MapPin, Calendar, Thermometer, Menu, X } from "lucide-react"
 import { useState, useRef, useEffect } from "react" // Added useRef and useEffect
+import ReactMarkdown from 'react-markdown'
 
 // Define a simpler, consistent message structure for the UI
 interface Message {
@@ -26,6 +27,8 @@ export default function AIAgentPage() {
   
   // Ref for auto-scrolling the chat area
   const scrollAreaRef = useRef<HTMLDivElement>(null)
+  // Ref to prevent duplicate streaming requests
+  const isStreamingRef = useRef(false)
 
   // Auto-scroll logic
   useEffect(() => {
@@ -38,6 +41,10 @@ export default function AIAgentPage() {
   }, [messages])
 
   const streamChatResponse = async (history: Message[]) => {
+    // Prevent duplicate streaming requests
+    if (isStreamingRef.current) return;
+    isStreamingRef.current = true;
+    
     setStatus('in_progress')
     
     // Convert current history (including new user message) to the format expected by the API route
@@ -45,6 +52,12 @@ export default function AIAgentPage() {
         role: m.role,
         content: m.content
     }))
+
+    // Create a temporary ID for the streaming message BEFORE starting the stream
+    const assistantId = Date.now().toString() + '-ai'
+    
+    // Add the empty assistant message to the state ONCE
+    setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }])
 
     try {
       const response = await fetch('/api/ocean-chat', {
@@ -60,12 +73,6 @@ export default function AIAgentPage() {
       const reader = response.body.getReader()
       const decoder = new TextDecoder()
       let aiResponse = ''
-      
-      // Create a temporary ID for the streaming message
-      const assistantId = Date.now().toString() + '-ai'
-      
-      // Add the empty assistant message to the state
-      setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }])
 
       // Read the stream
       while (true) {
@@ -86,6 +93,7 @@ export default function AIAgentPage() {
       setMessages((prev) => [...prev, errorMessage])
     } finally {
       setStatus('idle')
+      isStreamingRef.current = false;
     }
   }
 
@@ -96,14 +104,13 @@ export default function AIAgentPage() {
 
     const userMessage: Message = { id: Date.now().toString(), role: 'user', content: text };
     
-    // Update state first with the user message
-    setMessages((prev) => {
-        const newHistory = [...prev, userMessage];
-        // Initiate the streaming process with the new full history
-        streamChatResponse(newHistory); 
-        return newHistory;
-    });
-
+    // Add user message to the messages list
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    
+    // Then initiate the streaming process with the updated history
+    streamChatResponse(newMessages); 
+    
     setInput("");
   }
 
@@ -227,14 +234,64 @@ export default function AIAgentPage() {
                           )}
                         </div>
                         <div className="flex-1 space-y-2">
-                          <div className="bg-card border rounded-lg p-3">
-                            {/* RENDER MESSAGE.CONTENT DIRECTLY */}
-                            <div className="prose prose-sm max-w-none">
-                              {message.content.split("\n").map((line, lineIndex) => (
-                                <p key={lineIndex} className="mb-2 last:mb-0">
-                                  {line}
-                                </p>
-                              ))}
+                          <div className="bg-card border rounded-lg p-3 overflow-x-auto">
+                            {/* RENDER MARKDOWN CONTENT */}
+                            <div className="prose prose-sm dark:prose-invert max-w-none
+                              prose-headings:mt-4 prose-headings:mb-2
+                              prose-h1:text-lg prose-h2:text-base prose-h3:text-sm
+                              prose-p:my-1 prose-p:text-sm
+                              prose-ul:my-1 prose-ul:pl-4 prose-li:my-0.5
+                              prose-ol:my-1 prose-ol:pl-4
+                              prose-code:bg-slate-700 prose-code:text-orange-300 prose-code:px-1 prose-code:rounded
+                              prose-pre:bg-slate-800 prose-pre:text-slate-100 prose-pre:p-2 prose-pre:rounded prose-pre:overflow-x-auto
+                              prose-table:border-collapse prose-table:w-full prose-table:text-xs
+                              prose-thead:bg-slate-700 prose-th:border prose-th:p-2 prose-th:text-left
+                              prose-td:border prose-td:p-2
+                              prose-a:text-blue-400 prose-a:underline
+                              prose-strong:font-bold prose-strong:text-slate-100
+                              prose-em:italic prose-em:text-slate-300
+                              prose-hr:my-2 prose-hr:border-slate-600
+                            ">
+                              <ReactMarkdown
+                                components={{
+                                  table: ({node, ...props}) => (
+                                    <table className="w-full border-collapse text-xs my-2" {...props} />
+                                  ),
+                                  thead: ({node, ...props}) => (
+                                    <thead className="bg-slate-700" {...props} />
+                                  ),
+                                  th: ({node, ...props}) => (
+                                    <th className="border border-slate-600 p-2 text-left text-slate-100 font-semibold" {...props} />
+                                  ),
+                                  td: ({node, ...props}) => (
+                                    <td className="border border-slate-600 p-2" {...props} />
+                                  ),
+                                  tr: ({node, ...props}) => (
+                                    <tr className="hover:bg-slate-750" {...props} />
+                                  ),
+                                  code: ({node, inline, ...props}) => 
+                                    inline ? (
+                                      <code className="bg-slate-700 text-orange-300 px-1.5 py-0.5 rounded text-xs" {...props} />
+                                    ) : (
+                                      <code className="block bg-slate-800 text-slate-100 p-2 rounded overflow-x-auto text-xs" {...props} />
+                                    ),
+                                  pre: ({node, ...props}) => (
+                                    <pre className="bg-slate-800 text-slate-100 p-2 rounded overflow-x-auto my-2 text-xs" {...props} />
+                                  ),
+                                  h1: ({node, ...props}) => <h1 className="text-lg font-bold mt-3 mb-2" {...props} />,
+                                  h2: ({node, ...props}) => <h2 className="text-base font-bold mt-3 mb-1.5" {...props} />,
+                                  h3: ({node, ...props}) => <h3 className="text-sm font-semibold mt-2 mb-1" {...props} />,
+                                  ul: ({node, ...props}) => <ul className="list-disc list-inside my-1 space-y-0.5" {...props} />,
+                                  ol: ({node, ...props}) => <ol className="list-decimal list-inside my-1 space-y-0.5" {...props} />,
+                                  li: ({node, ...props}) => <li className="text-sm" {...props} />,
+                                  p: ({node, ...props}) => <p className="text-sm my-1" {...props} />,
+                                  a: ({node, ...props}) => <a className="text-blue-400 underline hover:text-blue-300" target="_blank" rel="noopener noreferrer" {...props} />,
+                                  hr: ({node, ...props}) => <hr className="my-2 border-slate-600" {...props} />,
+                                  blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-slate-600 pl-3 italic text-slate-300 my-2 text-sm" {...props} />,
+                                }}
+                              >
+                                {message.content}
+                              </ReactMarkdown>
                             </div>
                             
                             {/* Fallback for empty message during streaming */}
